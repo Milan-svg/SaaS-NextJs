@@ -8,6 +8,7 @@ export async function PUT(req:NextRequest, {params}:{params:{id:string}}){
         return NextResponse.json({error: "unauthorized"}, {status:401})
     }
     try {
+        const {completed} = await req.json()
         const todoId = params.id
         const todo = await prisma.todo.findUnique({where:{id:todoId}})
         if(!todo){
@@ -16,12 +17,11 @@ export async function PUT(req:NextRequest, {params}:{params:{id:string}}){
         if(todo.userId !== userId){
             return NextResponse.json({error:"not authorized to update this todo"}, {status:400})
         }
-        const{title} = await req.json()
         const updatedTodo = await prisma.todo.update({
             where:{id:todoId},
-            data:{title: title}
+            data:{completed}
         })
-        return NextResponse.json({message:"todo successfully updated!",status:200, updatedTodo})
+        return NextResponse.json(updatedTodo)
     } catch (error) {
         console.error("error while updating the todo", error)
         return NextResponse.json({error:"error while updating the todo", status:500})
