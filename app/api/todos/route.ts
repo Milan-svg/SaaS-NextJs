@@ -16,7 +16,7 @@ export async function GET(req: NextRequest){
     try {
         const todos = await prisma.todo.findMany({
             where:{
-                id:userId,
+                userId:userId,
                 title:{
                     contains: search,
                     mode: "insensitive"
@@ -59,9 +59,9 @@ export async function POST(req:NextRequest){
     if(!currUser){
         return NextResponse.json({error: "user not found"}, {status:401})
     }
-    if(!currUser.isSubbed && currUser.todos.length >= 3){
-        return NextResponse.json({error:"Upto 3 Todos Exhausted, please subscribe"}, {status:400})
-    }
+    // if(!currUser.isSubbed && currUser.todos.length >= 3){
+    //     return NextResponse.json({error:"Upto 3 Todos Exhausted, please subscribe"}, {status:400})
+    // }
 
     const {title} = await req.json()
     const newTodo = await prisma.todo.create({
